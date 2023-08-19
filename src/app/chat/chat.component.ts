@@ -13,6 +13,8 @@ export class ChatComponent implements OnInit, OnChanges  {
   public question!: string;
   public chats: Array<any> = new Array();
   public tabs: Array<any> = Faqs;
+  public loadingMessage = 'Good question, We are working on it...'
+
   constructor(public apiService: ApiService) { }
 
   ngOnInit() {
@@ -61,14 +63,24 @@ export class ChatComponent implements OnInit, OnChanges  {
       ...this.tabs[this.selectedIndex],
       body: model
     }
+    const loadingChatModel =  {
+      sender: 'bot',
+      data: {
+        answer: this.loadingMessage
+      }
+    }
+    this.chats.push(loadingChatModel);
     this.apiService.sendMessage(request).subscribe((res: Array<any>) => {
       res = res.map(el => {
         return  {
           sender: 'bot',
           ...el
         }
-      })
+      });
+      this.chats.splice(1, this.chats.length - 1);
       this.chats.push(...res);
+    }, (error: any) => {
+      this.chats.splice(1, this.chats.length - 1);
     })
   }
   onClear() {
