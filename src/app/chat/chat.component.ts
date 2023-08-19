@@ -30,18 +30,14 @@ export class ChatComponent implements OnInit, OnChanges  {
   faqQuestion(question: any) {
     const chatQuestionModel = {
       sender: 'user',
-      data: {
         answer: question.question
-      }
     }
     this.chats.push(chatQuestionModel);
     setTimeout(() => {
       const chatAnswerModel = {
         sender: 'bot',
         isFaq: true,
-        data: {
-          answer: (question.answer as Array<any>).join('')
-        }
+        answer: (question.answer as Array<any>).join('')
       }
       this.chats.push(chatAnswerModel);
     }, 100);
@@ -53,9 +49,7 @@ export class ChatComponent implements OnInit, OnChanges  {
     }
     const chatModel = {
       sender: 'user',
-      data: {
-        answer: this.question
-      }
+      answer: this.question
     }
     this.chats.push(chatModel);
     this.question = '';
@@ -65,18 +59,14 @@ export class ChatComponent implements OnInit, OnChanges  {
     }
     const loadingChatModel =  {
       sender: 'bot',
-      data: {
-        answer: this.loadingMessage
-      }
+      answer: this.loadingMessage
     }
     this.chats.push(loadingChatModel);
-    this.apiService.sendMessage(request).subscribe((res: Array<any>) => {
-      res = res.map(el => {
-        return  {
-          sender: 'bot',
-          ...el
-        }
-      });
+    this.apiService.sendMessage(request).subscribe((res: any) => {
+      res = {
+        sender: 'bot',
+        ...res
+      }
       this.chats.splice(1, this.chats.length - 1);
       this.chats.push(...res);
     }, (error: any) => {
